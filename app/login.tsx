@@ -1,13 +1,24 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+} from "@react-native-firebase/auth";
 import { Link } from "expo-router";
 import { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-const Index = () => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  async function handleLogin() {
+    try {
+      await signInWithEmailAndPassword(getAuth(), email, password);
+    } catch (e: any) {
+      Alert.alert("Error", e.code);
+    }
+  }
 
   return (
     <KeyboardAwareScrollView
@@ -37,7 +48,10 @@ const Index = () => {
           value={password}
           onChangeText={setPassword}
         />
-        <TouchableOpacity className=" bg-[#6c47ff] p-3 rounded-md">
+        <TouchableOpacity
+          className=" bg-[#6c47ff] p-3 rounded-md"
+          onPress={handleLogin}
+        >
           <Text className="text-white text-center text-xl font-bold">
             Login
           </Text>
@@ -61,4 +75,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Login;

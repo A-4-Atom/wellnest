@@ -1,13 +1,25 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+} from "@react-native-firebase/auth";
 import { Link } from "expo-router";
 import { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  async function handleRegister() {
+    try {
+      await createUserWithEmailAndPassword(getAuth(), email, password);
+    } catch (e: any) {
+      Alert.alert("Error", e.code);
+    }
+  }
 
   return (
     <KeyboardAwareScrollView
@@ -37,7 +49,10 @@ const Register = () => {
           value={password}
           onChangeText={setPassword}
         />
-        <TouchableOpacity className=" bg-[#6c47ff] p-3 rounded-md">
+        <TouchableOpacity
+          className=" bg-[#6c47ff] p-3 rounded-md"
+          onPress={handleRegister}
+        >
           <Text className="text-white text-center text-xl font-bold">
             Register
           </Text>
@@ -51,7 +66,7 @@ const Register = () => {
         </TouchableOpacity>
         <Text className="text-center text-md mt-2">
           Already Have An Account?{" "}
-          <Link href="/">
+          <Link href="/login">
             <Text className="font-bold">Login</Text>
           </Link>{" "}
           here.
