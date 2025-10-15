@@ -66,6 +66,7 @@ const Register = () => {
           placeholderTextColor="#000"
           value={password}
           onChangeText={setPassword}
+          secureTextEntry
         />
         <TouchableOpacity
           className=" bg-[#6c47ff] p-3 rounded-md"

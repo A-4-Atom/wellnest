@@ -25,7 +25,7 @@ export default function RootLayout() {
       if (!user) {
         router.replace("/login");
       } else {
-        router.replace("/(tabs)/home");
+        router.replace("/(tabs)");
       }
     }
   }, [initializing, user, router]);
