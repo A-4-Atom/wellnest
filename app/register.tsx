@@ -1,11 +1,11 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { Link } from "expo-router";
 import { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-const Index = () => {
+const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -18,9 +18,9 @@ const Index = () => {
     >
       <View className="flex flex-col gap-4 p-4 h-full mt-5">
         <View className="w-full flex items-center justify-center p-20">
-          <FontAwesome name="user-circle" size={100} color="#6c47ff" />
+          <FontAwesome5 name="user-plus" size={100} color="#6c47ff" />
         </View>
-        <Text className="font-bold text-3xl mt-5">Login</Text>
+        <Text className="font-bold text-3xl mt-5">Register</Text>
         <TextInput
           className="border-2 border-[#6c47ff] rounded-md p-3 text-black"
           autoCapitalize="none"
@@ -39,7 +39,7 @@ const Index = () => {
         />
         <TouchableOpacity className=" bg-[#6c47ff] p-3 rounded-md">
           <Text className="text-white text-center text-xl font-bold">
-            Login
+            Register
           </Text>
         </TouchableOpacity>
         <Text className="text-center font-semibold">OR</Text>
@@ -50,9 +50,9 @@ const Index = () => {
           </Text>
         </TouchableOpacity>
         <Text className="text-center text-md mt-2">
-          Don&apos;t have an account?{" "}
-          <Link href="/register">
-            <Text className="font-bold">Register</Text>
+          Already Have An Account?{" "}
+          <Link href="/">
+            <Text className="font-bold">Login</Text>
           </Link>{" "}
           here.
         </Text>
@@ -61,4 +61,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Register;
