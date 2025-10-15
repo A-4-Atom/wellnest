@@ -13,10 +13,24 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   async function handleLogin() {
+    if(!email.trim() || !password.trim()) {
+      Alert.alert("Error", "Please enter both email and password.");
+      return;
+    }
     try {
-      await signInWithEmailAndPassword(getAuth(), email, password);
+      await signInWithEmailAndPassword(getAuth(), email.trim(), password.trim());
     } catch (e: any) {
-      Alert.alert("Error", e.code);
+        let errorMessage = "";
+        if(e.code === 'auth/wrong-password'){
+          errorMessage = "Incorrect password. Please try again.";
+        }else if(e.code === 'auth/user-not-found'){
+            errorMessage = "No account found with this email.";
+        } else if (e.code === 'auth/invalid-email') {
+            errorMessage = "The email address is badly formatted.";
+        } else {
+            errorMessage = e.message;
+        }
+      Alert.alert("Error", errorMessage);
     }
   }
 

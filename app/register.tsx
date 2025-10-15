@@ -14,10 +14,28 @@ const Register = () => {
   const [password, setPassword] = useState("");
 
   async function handleRegister() {
+    if (!email.trim() || !password.trim()) {
+      Alert.alert("Error", "Please enter both email and password.");
+      return;
+    }
     try {
-      await createUserWithEmailAndPassword(getAuth(), email, password);
+      await createUserWithEmailAndPassword(
+        getAuth(),
+        email.trim(),
+        password.trim()
+      );
     } catch (e: any) {
-      Alert.alert("Error", e.code);
+      let errorMessage = "";
+      if (e.code === "auth/email-already-in-use") {
+        errorMessage = "This email is already registered.";
+      } else if (e.code === "auth/invalid-email") {
+        errorMessage = "The email address is badly formatted.";
+      } else if (e.code === "auth/weak-password") {
+        errorMessage = "Password is too weak. Please use a stronger password.";
+      } else {
+        errorMessage = e.message;
+      }
+      Alert.alert("Error", errorMessage);
     }
   }
 
