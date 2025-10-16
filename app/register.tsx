@@ -11,6 +11,7 @@ import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useUserStore } from "../store/userStore";
 import {
+  addUserToFirestore,
   errorHandler,
   formatUserFromCredential,
   handleGoogleSignIn,
@@ -40,7 +41,19 @@ const Register = () => {
         email.trim(),
         password.trim()
       );
-      setUser(formatUserFromCredential(userCredential, "email", name));
+      const formattedUser = formatUserFromCredential(
+        userCredential,
+        "email",
+        name
+      );
+      setUser(formattedUser);
+      await addUserToFirestore({
+        uid: formattedUser.uid,
+        firstName: formattedUser.firstName,
+        lastName: formattedUser.lastName,
+        provider: formattedUser.provider,
+        registeredOn: formattedUser.registeredOn,
+      });
     } catch (e: any) {
       errorHandler(e);
     }

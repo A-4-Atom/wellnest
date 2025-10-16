@@ -1,6 +1,7 @@
 // Formats user object for userStore from Firebase userCredential
 // Handles Firebase auth errors and shows user-friendly messages
 import { firebase } from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { Alert } from "react-native";
 import { useUserStore } from "../store/userStore";
@@ -19,6 +20,7 @@ export function formatUserFromCredential(
     lastName: "",
     provider,
     hasOnboarded,
+    registeredOn: new Date().toISOString(),
   };
 }
 
@@ -52,7 +54,7 @@ export async function handleGoogleSignIn() {
       .auth()
       .signInWithCredential(googleCredential);
     const hasOnboarded = useUserStore.getState().hasOnboarded;
-    setUser({
+    const formattedUser = {
       uid: userCredential.user.uid,
       email: userCredential.user.email ?? undefined,
       firstName: userCredential.user.displayName ?? "",
@@ -60,9 +62,46 @@ export async function handleGoogleSignIn() {
       provider: "google",
       hasOnboarded,
       registeredOn: new Date().toISOString(),
+    };
+    setUser(formattedUser);
+    await addUserToFirestore({
+      uid: formattedUser.uid,
+      firstName: formattedUser.firstName,
+      lastName: formattedUser.lastName,
+      provider: formattedUser.provider,
+      registeredOn: formattedUser.registeredOn,
     });
   } catch (error: any) {
     console.log(error.message);
     Alert.alert("Error", error.message);
+  }
+}
+
+export async function addUserToFirestore({
+  uid,
+  firstName,
+  lastName = "",
+  provider,
+  registeredOn,
+}: {
+  uid: string;
+  firstName: string;
+  lastName?: string;
+  provider: string;
+  registeredOn: string;
+}) {
+  try {
+    if (!uid) {
+      return;
+    }
+    await firestore().collection("users").doc(uid).set({
+      uid,
+      firstName,
+      lastName,
+      provider,
+      registered: registeredOn,
+    });
+  } catch (e: any) {
+    console.log("Firestore error:", e.message);
   }
 }
