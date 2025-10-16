@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "253923224813-slbu1oheop3br6to9rohl472tnl3lp9q.apps.googleusercontent.com",
+          "client_id": "253923224813-s5q2s6etnqclnikkd74rv0nk6aqe9vac.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.vikascsgo.wellnest",
-            "certificate_hash": "be1fa42780dc4fc0397ac5991a384afbb51be7b8"
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {

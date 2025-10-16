@@ -1,12 +1,14 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { getAuth, signOut } from "@react-native-firebase/auth";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import React from "react";
-import { Pressable, Text, View, Alert } from "react-native";
-import {getAuth, signOut} from "@react-native-firebase/auth";
+import { Alert, Pressable, Text, View } from "react-native";
 
 const Profile = () => {
   async function handleLogout() {
     try {
       await signOut(getAuth());
+      await GoogleSignin.signOut();
     } catch (e) {
       Alert.alert("Error", "Failed to log out. Please try again." + e);
     }
