@@ -3,16 +3,16 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 type UserStore = {
-    uid: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    provider: string;
-    hasOnboarded: boolean;
-    setUser: (user: Partial<UserStore>) => void;
-    clearUser: () => void;
-    setOnboarded: (status: boolean) => void;
-    registeredOn: string;
+  uid: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  provider: string;
+  hasOnboarded: boolean;
+  setUser: (user: Partial<UserStore>) => void;
+  clearUser: () => void;
+  setOnboarded: (status: boolean) => void;
+  registeredOn: string;
 };
 
 export const useUserStore = create(
@@ -26,7 +26,16 @@ export const useUserStore = create(
       hasOnboarded: false,
       registeredOn: "",
       setUser: (user: any) => set(() => ({ ...user })),
-      clearUser: () => set(() => ({ uid: "", firstName: "", lastName: "", email: "", provider: "", hasOnboarded: false, registeredOn: "" })),
+      clearUser: () =>
+        set((state) => ({
+          uid: "",
+          firstName: "",
+          lastName: "",
+          email: "",
+          provider: "",
+          hasOnboarded: state.hasOnboarded,
+          registeredOn: "",
+        })),
       setOnboarded: (status: boolean) => set(() => ({ hasOnboarded: status })),
     }),
     {
