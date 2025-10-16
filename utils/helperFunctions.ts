@@ -4,18 +4,21 @@ import { firebase } from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { Alert } from "react-native";
 import { useUserStore } from "../store/userStore";
+
 export function formatUserFromCredential(
   userCredential: any,
   provider: string,
   firstName?: string
 ) {
+  // Get the current hasOnboarded value from the store
+  const hasOnboarded = useUserStore.getState().hasOnboarded;
   return {
     uid: userCredential.user.uid,
     email: userCredential.user.email ?? undefined,
     firstName: firstName ?? userCredential.user.displayName ?? "",
     lastName: "",
     provider,
-    hasOnboarded: false,
+    hasOnboarded,
   };
 }
 
@@ -48,13 +51,14 @@ export async function handleGoogleSignIn() {
     const userCredential = await firebase
       .auth()
       .signInWithCredential(googleCredential);
+    const hasOnboarded = useUserStore.getState().hasOnboarded;
     setUser({
       uid: userCredential.user.uid,
       email: userCredential.user.email ?? undefined,
       firstName: userCredential.user.displayName ?? "",
       lastName: "",
       provider: "google",
-      hasOnboarded: false,
+      hasOnboarded,
       registeredOn: new Date().toISOString(),
     });
   } catch (error: any) {

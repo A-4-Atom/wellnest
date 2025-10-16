@@ -5,11 +5,13 @@ import { useEffect, useState } from "react";
 import "react-native-gesture-handler";
 import "react-native-reanimated";
 import "../global.css";
+import { useUserStore } from "../store/userStore";
 
 export default function RootLayout() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
   const router = useRouter();
+  const hasOnboarded = useUserStore((state) => state.hasOnboarded);
 
   useEffect(() => {
     function handleAuthStateChanged(user: any) {
@@ -22,13 +24,15 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (!initializing) {
-      if (!user) {
+      if (!hasOnboarded) {
+        router.replace("/onboarding");
+      } else if (!user) {
         router.replace("/login");
       } else {
         router.replace("/(tabs)");
       }
     }
-  }, [initializing, user, router]);
+  }, [initializing, user, router, hasOnboarded]);
 
   return (
     <>
@@ -41,6 +45,12 @@ export default function RootLayout() {
           headerBackTitle: "Back",
         }}
       >
+        <Stack.Screen
+          name="onboarding"
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           name="login"
           options={{
