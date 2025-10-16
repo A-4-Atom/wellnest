@@ -1,7 +1,6 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
-  firebase,
   getAuth,
   signInWithEmailAndPassword,
 } from "@react-native-firebase/auth";
@@ -11,9 +10,17 @@ import { useEffect, useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
+import { useUserStore } from "../store/userStore";
+import {
+  errorHandler,
+  formatUserFromCredential,
+  handleGoogleSignIn,
+} from "../utils/helperFunctions";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const setUser = useUserStore((state) => state.setUser);
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -28,40 +35,14 @@ const Login = () => {
       return;
     }
     try {
-      await signInWithEmailAndPassword(
+      const userCredential = await signInWithEmailAndPassword(
         getAuth(),
         email.trim(),
         password.trim()
       );
+      setUser(formatUserFromCredential(userCredential, "email"));
     } catch (e: any) {
-      let errorMessage = "";
-      if (e.code === "auth/wrong-password") {
-        errorMessage = "Incorrect password. Please try again.";
-      } else if (e.code === "auth/user-not-found") {
-        errorMessage = "No account found with this email.";
-      } else if (e.code === "auth/invalid-email") {
-        errorMessage = "The email address is badly formatted.";
-      } else {
-        errorMessage = e.message;
-      }
-      Alert.alert("Error", errorMessage);
-    }
-  }
-
-  async function handleGoogleSignIn() {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const signInResult = await GoogleSignin.signIn();
-      const idToken = signInResult.data?.idToken;
-      if (!idToken) {
-        Alert.alert("Error", "Failed to get ID token from Google Sign-In");
-        return;
-      }
-      const googleCredential =
-        firebase.auth.GoogleAuthProvider.credential(idToken);
-      await firebase.auth().signInWithCredential(googleCredential);
-    } catch (error: any) {
-      Alert.alert("Error", error.message);
+      errorHandler(e);
     }
   }
 
