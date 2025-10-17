@@ -4,12 +4,12 @@ import {
   createUserWithEmailAndPassword,
   getAuth,
 } from "@react-native-firebase/auth";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useUserStore } from "../store/userStore";
+import { configureGoogleSignin } from "../utils/googleSigninConfig";
 import {
   addUserToFirestore,
   errorHandler,
@@ -24,10 +24,7 @@ const Register = () => {
   const setUser = useUserStore((state) => state.setUser);
 
   useEffect(() => {
-    GoogleSignin.configure({
-      webClientId:
-        "253923224813-sec7pbfp3uedt0nek0avhk631flcfi0k.apps.googleusercontent.com",
-    });
+    configureGoogleSignin();
   }, []);
 
   async function handleRegister() {
@@ -64,7 +61,7 @@ const Register = () => {
       keyboardShouldPersistTaps="handled"
       enableAutomaticScroll
       enableOnAndroid
-      className="flex-1"
+      className="flex-1 bg-background"
     >
       <View className="flex flex-col gap-4 p-4 h-full mt-5">
         <View className="w-full flex items-center justify-center p-20">
@@ -72,7 +69,7 @@ const Register = () => {
         </View>
         <Text className="font-bold text-3xl mt-5">Register</Text>
         <TextInput
-          className="border-2 border-[#6c47ff] rounded-md p-3 text-black"
+          className="border-2 border-primary rounded-md p-3 text-black"
           autoCapitalize="none"
           placeholder="Enter Your Name"
           placeholderTextColor="#000"
@@ -80,7 +77,7 @@ const Register = () => {
           onChangeText={setName}
         />
         <TextInput
-          className="border-2 border-[#6c47ff] rounded-md p-3 text-black"
+          className="border-2 border-primary rounded-md p-3 text-black"
           autoCapitalize="none"
           placeholder="Enter Your Email"
           placeholderTextColor="#000"
@@ -88,7 +85,7 @@ const Register = () => {
           onChangeText={setEmail}
         />
         <TextInput
-          className="border-2 border-[#6c47ff] rounded-md p-3 text-black"
+          className="border-2 border-primary rounded-md p-3 text-black"
           autoCapitalize="none"
           placeholder="Enter Your Password"
           placeholderTextColor="#000"
@@ -97,7 +94,7 @@ const Register = () => {
           secureTextEntry
         />
         <TouchableOpacity
-          className=" bg-[#6c47ff] p-3 rounded-md"
+          className=" bg-primary p-3 rounded-md"
           onPress={handleRegister}
         >
           <Text className="text-white text-center text-xl font-bold">
@@ -106,11 +103,11 @@ const Register = () => {
         </TouchableOpacity>
         <Text className="text-center font-semibold">OR</Text>
         <TouchableOpacity
-          className="flex-row items-center justify-center gap-5 border-2 border-[#6c47ff] p-3"
+          className="flex-row items-center justify-center gap-5 border-2 border-primary p-3"
           onPress={handleGoogleSignIn}
         >
-          <AntDesign name="google" size={24} color="#6c47ff" className="" />
-          <Text className="text-xl font-semibold text-[#6c47ff]">
+          <AntDesign name="google" size={24} color="#6c47ff" />
+          <Text className="text-xl font-semibold text-primary">
             Continue with Google
           </Text>
         </TouchableOpacity>
