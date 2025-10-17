@@ -1,50 +1,100 @@
-# Welcome to your Expo app 👋
+# Wellnest
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> A modern Expo + React Native app for onboarding, authentication, and user management, using Firebase and Google Sign-In, styled with Tailwind CSS (NativeWind).
 
-## Get started
+---
 
-1. Install dependencies
+## Features
+
+- **Expo + React Native**: Cross-platform mobile app (Android/iOS/Web)
+- **File-based Routing**: Powered by `expo-router` for easy navigation
+- **Authentication**: Email/password and Google Sign-In via Firebase
+- **Onboarding Flow**: Dynamic onboarding slides from Firestore
+- **Persistent User Store**: Zustand + AsyncStorage for user state
+- **Tailwind CSS**: Utility-first styling with NativeWind
+- **Profile Management**: View and logout functionality
+
+---
+
+## Folder Structure
+
+```markdown
+wellnest/
+├── app/ # App screens and routes (login, register, onboarding, tabs)
+│ ├── (tabs)/ # Tab navigation (Home, Profile)
+│ ├── \_layout.tsx # Root layout and navigation logic
+│ ├── login.tsx # Login screen
+│ ├── register.tsx # Registration screen
+│ └── onboarding.tsx # Onboarding flow
+├── components/ # Reusable UI components (Button, GoogleSignInButton)
+├── store/ # Zustand user store
+├── utils/ # Helper functions, Google Sign-In config
+├── constants/ # Theme and color constants
+├── assets/ # Images and static assets
+├── global.css # Tailwind/NativeWind global styles
+├── tailwind.config.js # Tailwind/NativeWind config
+├── app.json # Expo app config
+├── package.json # Project dependencies and scripts
+└── ...
+```
+
+---
+
+## Getting Started
+
+1. **Install dependencies**
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. **Start the app**
 
    ```bash
-   npx expo start
+   npm run start
+   # or for Android
+   npm run android
+   # or for Web
+   npm run web
    ```
 
-In the output, you'll find options to open the app in a
+3. **Configure Firebase**
+   - Place your `google-services.json` in `assets/` (already present for demo)
+   - Set up your Firebase project and update environment variables as needed
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Scripts
 
-## Get a fresh project
+- `npm run start` – Start Expo development server
+- `npm run android` – Run app on Android device/emulator
+- `npm run web` – Run app in web browser
+- `npm run lint` – Lint code with ESLint
+- `npm run reset-project` – Reset to a blank app directory
 
-When you're ready, run:
+---
 
-```bash
-npm run reset-project
-```
+## Tech Stack
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- [Expo](https://expo.dev/) + [React Native](https://reactnative.dev/)
+- [expo-router](https://expo.github.io/router/docs)
+- [Firebase](https://firebase.google.com/) (Auth, Firestore)
+- [Google Sign-In](https://github.com/react-native-google-signin/google-signin)
+- [Zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
+- [NativeWind](https://www.nativewind.dev/) (Tailwind CSS for React Native)
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+## Contributing
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+1. Fork the repo and clone it
+2. Install dependencies: `npm install`
+3. Create a new branch for your feature/fix
+4. Make your changes and commit
+5. Open a pull request
 
-## Join the community
+---
 
-Join our community of developers creating universal apps.
+## License
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+MIT
