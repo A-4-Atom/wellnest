@@ -57,6 +57,18 @@ export async function handleGoogleSignIn() {
     const nameParts = displayName.trim().split(" ");
     const firstName = nameParts[0] || "";
     const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+
+    // Check if user already exists in Firestore
+    const userDoc = await firestore()
+      .collection("users")
+      .doc(userCredential.user.uid)
+      .get();
+    let registeredOn = new Date().toISOString();
+    const userData = userDoc.data();
+    if (userData && userData.registered) {
+      registeredOn = userData.registered;
+    }
+
     const formattedUser = {
       uid: userCredential.user.uid,
       email: userCredential.user.email ?? undefined,
@@ -64,7 +76,7 @@ export async function handleGoogleSignIn() {
       lastName,
       provider: "google",
       hasOnboarded,
-      registeredOn: new Date().toISOString(),
+      registeredOn,
     };
     setUser(formattedUser);
     await addUserToFirestore({
