@@ -9,7 +9,8 @@ import { useUserStore } from "../store/userStore";
 export function formatUserFromCredential(
   userCredential: any,
   provider: string,
-  firstName?: string
+  firstName?: string,
+  lastName?: string
 ) {
   // Get the current hasOnboarded value from the store
   const hasOnboarded = useUserStore.getState().hasOnboarded;
@@ -17,7 +18,7 @@ export function formatUserFromCredential(
     uid: userCredential.user.uid,
     email: userCredential.user.email ?? undefined,
     firstName: firstName ?? userCredential.user.displayName ?? "",
-    lastName: "",
+    lastName: lastName ?? "",
     provider,
     hasOnboarded,
     registeredOn: new Date().toISOString(),
@@ -66,6 +67,7 @@ export async function handleGoogleSignIn() {
     setUser(formattedUser);
     await addUserToFirestore({
       uid: formattedUser.uid,
+      email: formattedUser.email || "",
       firstName: formattedUser.firstName,
       lastName: formattedUser.lastName,
       provider: formattedUser.provider,
@@ -83,12 +85,14 @@ export async function addUserToFirestore({
   lastName = "",
   provider,
   registeredOn,
+  email,
 }: {
   uid: string;
   firstName: string;
   lastName?: string;
   provider: string;
   registeredOn: string;
+  email: string;
 }) {
   try {
     if (!uid) {
@@ -96,6 +100,7 @@ export async function addUserToFirestore({
     }
     await firestore().collection("users").doc(uid).set({
       uid,
+      email,
       firstName,
       lastName,
       provider,

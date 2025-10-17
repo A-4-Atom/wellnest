@@ -1,4 +1,4 @@
-import AntDesign from "@expo/vector-icons/AntDesign";
+// ...existing code...
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   getAuth,
@@ -8,13 +8,13 @@ import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import GoogleSignInButton from "../components/GoogleSignInButton";
 import { configureGoogleSignin } from "../utils/googleSigninConfig";
 
 import { useUserStore } from "../store/userStore";
 import {
   errorHandler,
   formatUserFromCredential,
-  handleGoogleSignIn,
 } from "../utils/helperFunctions";
 
 const Login = () => {
@@ -62,6 +62,7 @@ const Login = () => {
           placeholderTextColor="#000"
           value={email}
           onChangeText={setEmail}
+          keyboardType="email-address"
         />
         <TextInput
           className="border-2 border-primary rounded-md p-3 text-black"
@@ -81,15 +82,7 @@ const Login = () => {
           </Text>
         </TouchableOpacity>
         <Text className="text-center font-semibold">OR</Text>
-        <TouchableOpacity
-          className="flex-row items-center justify-center gap-5 border-2 border-primary p-3"
-          onPress={handleGoogleSignIn}
-        >
-          <AntDesign name="google" size={24} color="#6c47ff" />
-          <Text className="text-xl font-semibold text-primary">
-            Continue with Google
-          </Text>
-        </TouchableOpacity>
+        <GoogleSignInButton />
         <Text className="text-center text-md mt-2">
           Don&apos;t have an account?{" "}
           <Link href="/register">

@@ -9,6 +9,7 @@ import { configureGoogleSignin } from "../../utils/googleSigninConfig";
 const Profile = () => {
   const userName = useUserStore((state) => state.firstName);
   const clearUser = useUserStore((state) => state.clearUser);
+  const email = useUserStore((state) => state.email);
 
   useEffect(() => {
     configureGoogleSignin();
@@ -25,12 +26,15 @@ const Profile = () => {
   }
 
   return (
-    <View className="flex items-center justify-center h-full gap-4">
-      <Text>{`Logged in as: ${userName}`}</Text>
-      <Text>Logout</Text>
-      <Pressable onPress={handleLogout}>
-        <MaterialCommunityIcons name="logout" size={24} color="black" />
-      </Pressable>
+    <View className="flex items-center justify-center h-full gap-4 bg-background">
+      <Text className="text-xl">{`Logged in as: ${userName}`}</Text>
+      <Text className="text-lg">{`Email: ${email}`}</Text>
+      <View className="flex flex-row items-center gap-4">
+        <Text className="text-lg">Logout</Text>
+        <Pressable onPress={handleLogout}>
+          <MaterialCommunityIcons name="logout" size={24} color="black" />
+        </Pressable>
+      </View>
     </View>
   );
 };

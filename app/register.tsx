@@ -1,4 +1,4 @@
-import AntDesign from "@expo/vector-icons/AntDesign";
+// ...existing code...
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import {
   createUserWithEmailAndPassword,
@@ -6,15 +6,16 @@ import {
 } from "@react-native-firebase/auth";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TextInput, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Button from "../components/Button";
+import GoogleSignInButton from "../components/GoogleSignInButton";
 import { useUserStore } from "../store/userStore";
 import { configureGoogleSignin } from "../utils/googleSigninConfig";
 import {
   addUserToFirestore,
   errorHandler,
   formatUserFromCredential,
-  handleGoogleSignIn,
 } from "../utils/helperFunctions";
 
 const Register = () => {
@@ -33,19 +34,25 @@ const Register = () => {
       return;
     }
     try {
+      // Split name into first and last name
+      const nameParts = name.trim().split(" ");
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+
       const userCredential = await createUserWithEmailAndPassword(
         getAuth(),
         email.trim(),
         password.trim()
       );
-      const formattedUser = formatUserFromCredential(
-        userCredential,
-        "email",
-        name
-      );
+
+      const formattedUser = {
+        ...formatUserFromCredential(userCredential, "email", firstName),
+        lastName,
+      };
       setUser(formattedUser);
       await addUserToFirestore({
         uid: formattedUser.uid,
+        email: formattedUser.email,
         firstName: formattedUser.firstName,
         lastName: formattedUser.lastName,
         provider: formattedUser.provider,
@@ -83,6 +90,7 @@ const Register = () => {
           placeholderTextColor="#000"
           value={email}
           onChangeText={setEmail}
+          keyboardType="email-address"
         />
         <TextInput
           className="border-2 border-primary rounded-md p-3 text-black"
@@ -93,24 +101,9 @@ const Register = () => {
           onChangeText={setPassword}
           secureTextEntry
         />
-        <TouchableOpacity
-          className=" bg-primary p-3 rounded-md"
-          onPress={handleRegister}
-        >
-          <Text className="text-white text-center text-xl font-bold">
-            Register
-          </Text>
-        </TouchableOpacity>
+        <Button text="Register" onPress={handleRegister} />
         <Text className="text-center font-semibold">OR</Text>
-        <TouchableOpacity
-          className="flex-row items-center justify-center gap-5 border-2 border-primary p-3"
-          onPress={handleGoogleSignIn}
-        >
-          <AntDesign name="google" size={24} color="#6c47ff" />
-          <Text className="text-xl font-semibold text-primary">
-            Continue with Google
-          </Text>
-        </TouchableOpacity>
+        <GoogleSignInButton />
         <Text className="text-center text-md mt-2">
           Already Have An Account?{" "}
           <Link href="/login">
