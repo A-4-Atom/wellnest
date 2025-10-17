@@ -28,9 +28,18 @@ const Register = () => {
     configureGoogleSignin();
   }, []);
 
+  function isValidEmail(email: string) {
+    // Simple email regex for validation
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
   async function handleRegister() {
     if (!email.trim() || !password.trim()) {
       Alert.alert("Error", "Please enter both email and password.");
+      return;
+    }
+    if (!isValidEmail(email.trim())) {
+      Alert.alert("Invalid Email", "Please enter a valid email address.");
       return;
     }
     try {

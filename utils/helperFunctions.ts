@@ -1,5 +1,3 @@
-// Formats user object for userStore from Firebase userCredential
-// Handles Firebase auth errors and shows user-friendly messages
 import { firebase } from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
@@ -12,7 +10,6 @@ export function formatUserFromCredential(
   firstName?: string,
   lastName?: string
 ) {
-  // Get the current hasOnboarded value from the store
   const hasOnboarded = useUserStore.getState().hasOnboarded;
   return {
     uid: userCredential.user.uid,
@@ -55,11 +52,16 @@ export async function handleGoogleSignIn() {
       .auth()
       .signInWithCredential(googleCredential);
     const hasOnboarded = useUserStore.getState().hasOnboarded;
+    // Split displayName into first and last name
+    const displayName = userCredential.user.displayName || "";
+    const nameParts = displayName.trim().split(" ");
+    const firstName = nameParts[0] || "";
+    const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
     const formattedUser = {
       uid: userCredential.user.uid,
       email: userCredential.user.email ?? undefined,
-      firstName: userCredential.user.displayName ?? "",
-      lastName: "",
+      firstName,
+      lastName,
       provider: "google",
       hasOnboarded,
       registeredOn: new Date().toISOString(),
