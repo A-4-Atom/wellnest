@@ -1,8 +1,17 @@
-import { firebase } from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
+import {
+  GoogleAuthProvider,
+  signInWithCredential,
+} from "@react-native-firebase/auth";
+import {
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+} from "@react-native-firebase/firestore";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { Alert } from "react-native";
 import { useUserStore } from "../store/userStore";
+import { auth, db } from "./firebase";
 
 export function formatUserFromCredential(
   userCredential: any,
@@ -46,11 +55,8 @@ export async function handleGoogleSignIn() {
       Alert.alert("Error", "Failed to get ID token from Google Sign-In");
       return;
     }
-    const googleCredential =
-      firebase.auth.GoogleAuthProvider.credential(idToken);
-    const userCredential = await firebase
-      .auth()
-      .signInWithCredential(googleCredential);
+    const googleCredential = GoogleAuthProvider.credential(idToken);
+    const userCredential = await signInWithCredential(auth, googleCredential);
     const hasOnboarded = useUserStore.getState().hasOnboarded;
     // Split displayName into first and last name
     const displayName = userCredential.user.displayName || "";
@@ -59,13 +65,11 @@ export async function handleGoogleSignIn() {
     const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
 
     // Check if user already exists in Firestore
-    const userDoc = await firestore()
-      .collection("users")
-      .doc(userCredential.user.uid)
-      .get();
+    const userDocRef = doc(collection(db, "users"), userCredential.user.uid);
+    const userDoc = await getDoc(userDocRef);
     let registeredOn = new Date().toISOString();
-    const userData = userDoc.data();
-    if (userData && userData.registered) {
+    const userData = userDoc.data() as { registered?: string } | undefined;
+    if (userData?.registered) {
       registeredOn = userData.registered;
     }
 
@@ -112,7 +116,8 @@ export async function addUserToFirestore({
     if (!uid) {
       return;
     }
-    await firestore().collection("users").doc(uid).set({
+    const userDocRef = doc(collection(db, "users"), uid);
+    await setDoc(userDocRef, {
       uid,
       email,
       firstName,

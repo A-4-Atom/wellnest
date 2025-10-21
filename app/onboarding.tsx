@@ -1,4 +1,10 @@
-import firestore from "@react-native-firebase/firestore";
+import { getApp } from "@react-native-firebase/app";
+import type { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+} from "@react-native-firebase/firestore";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -33,11 +39,18 @@ const Onboarding = () => {
     }
     const fetchSlides = async () => {
       try {
-        const snapshot = await firestore().collection("onboardingSlides").get();
-        const data = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Slide[];
+        const app = getApp();
+        const db = getFirestore(app);
+        const querySnapshot = await getDocs(collection(db, "onboardingSlides"));
+        const data = querySnapshot.docs.map(
+          (doc: FirebaseFirestoreTypes.DocumentSnapshot) => {
+            const docData = doc.data() as Record<string, any>;
+            return {
+              id: doc.id,
+              ...docData,
+            };
+          }
+        );
         setSlides(data);
       } catch (e: any) {
         Alert.alert("Error", e.message || "Failed to load onboarding slides.");

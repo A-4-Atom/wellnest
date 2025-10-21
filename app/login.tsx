@@ -1,14 +1,12 @@
 // ...existing code...
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-} from "@react-native-firebase/auth";
+import { signInWithEmailAndPassword } from "@react-native-firebase/auth";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import GoogleSignInButton from "../components/GoogleSignInButton";
+import { auth } from "../utils/firebase";
 import { configureGoogleSignin } from "../utils/googleSigninConfig";
 
 import { useUserStore } from "../store/userStore";
@@ -33,7 +31,7 @@ const Login = () => {
     }
     try {
       const userCredential = await signInWithEmailAndPassword(
-        getAuth(),
+        auth,
         email.trim(),
         password.trim()
       );
