@@ -1,10 +1,6 @@
-import { getApp } from "@react-native-firebase/app";
+import { db } from "@/utils/firebase";
 import type { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
-import {
-  collection,
-  getDocs,
-  getFirestore,
-} from "@react-native-firebase/firestore";
+import { collection, getDocs } from "@react-native-firebase/firestore";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -39,12 +35,10 @@ const Onboarding = () => {
     }
     const fetchSlides = async () => {
       try {
-        const app = getApp();
-        const db = getFirestore(app);
         const querySnapshot = await getDocs(collection(db, "onboardingSlides"));
         const data = querySnapshot.docs.map(
           (doc: FirebaseFirestoreTypes.DocumentSnapshot) => {
-            const docData = doc.data() as Record<string, any>;
+            const docData = doc.data();
             return {
               id: doc.id,
               ...docData,
