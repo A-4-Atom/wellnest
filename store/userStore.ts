@@ -2,21 +2,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-type UserStore = {
+export type UserStoreType = {
   uid: string;
   firstName: string;
   lastName: string;
   email: string;
   provider: string;
   hasOnboarded: boolean;
-  setUser: (user: Partial<UserStore>) => void;
+  setUser: (user: Partial<UserStoreType>) => void;
   clearUser: () => void;
   setOnboarded: (status: boolean) => void;
   registeredOn: string;
 };
 
 export const useUserStore = create(
-  persist<UserStore>(
+  persist<UserStoreType>(
     (set) => ({
       uid: "",
       firstName: "",

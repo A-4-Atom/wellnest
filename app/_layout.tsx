@@ -1,4 +1,8 @@
-import { getAuth, onAuthStateChanged } from "@react-native-firebase/auth";
+import {
+  FirebaseAuthTypes,
+  getAuth,
+  onAuthStateChanged,
+} from "@react-native-firebase/auth";
 import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
@@ -9,30 +13,39 @@ import { useUserStore } from "../store/userStore";
 
 export default function RootLayout() {
   const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
-  const router = useRouter();
+  const setUser = useUserStore((state) => state.setUser);
+  const uid = useUserStore((state) => state.uid);
   const hasOnboarded = useUserStore((state) => state.hasOnboarded);
+  const router = useRouter();
 
   useEffect(() => {
-    function handleAuthStateChanged(user: any) {
-      setUser(user);
-      if (initializing) setInitializing(false);
+    function handleAuthStateChanged(user: FirebaseAuthTypes.User | null) {
+      if (user) {
+        setUser({
+          uid: user.uid,
+          email: user.email ?? "",
+          firstName: user.displayName ?? "",
+          provider: user.providerData?.[0]?.providerId ?? "",
+          registeredOn: new Date().toISOString(),
+        });
+      }
+      setInitializing(false);
     }
     const subscriber = onAuthStateChanged(getAuth(), handleAuthStateChanged);
     return subscriber;
-  }, [initializing, user]);
+  }, [initializing, setUser]);
 
   useEffect(() => {
     if (!initializing) {
       if (!hasOnboarded) {
         router.replace("/onboarding");
-      } else if (!user) {
+      } else if (!uid) {
         router.replace("/login");
       } else {
         router.replace("/(tabs)");
       }
     }
-  }, [initializing, user, router, hasOnboarded]);
+  }, [initializing, uid, router, hasOnboarded]);
 
   return (
     <>
