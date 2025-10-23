@@ -15,15 +15,19 @@ import {
 } from "../utils/helperFunctions";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({ email: "", password: "" });
   const setUser = useUserStore((state) => state.setUser);
 
   useEffect(() => {
     configureGoogleSignin();
   }, []);
 
+  const handleChange = (key: "email" | "password", value: string) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
   async function handleLogin() {
+    const { email, password } = form;
     if (!email.trim() || !password.trim()) {
       Alert.alert("Error", "Please enter both email and password.");
       return;
@@ -55,15 +59,15 @@ const Login = () => {
         <FormInput
           autoCapitalize="none"
           placeholder="Enter Your Email"
-          value={email}
-          onChangeText={setEmail}
+          value={form.email}
+          onChangeText={(val) => handleChange("email", val)}
           keyboardType="email-address"
         />
         <FormInput
           autoCapitalize="none"
           placeholder="Enter Your Password"
-          value={password}
-          onChangeText={setPassword}
+          value={form.password}
+          onChangeText={(val) => handleChange("password", val)}
           secureTextEntry
         />
         <TouchableOpacity

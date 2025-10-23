@@ -1,11 +1,11 @@
-// ...existing code...
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { createUserWithEmailAndPassword } from "@react-native-firebase/auth";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Text, TextInput, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Button from "../components/Button";
+import FormInput from "../components/FormInput";
 import GoogleSignInButton from "../components/GoogleSignInButton";
 import { useUserStore } from "../store/userStore";
 import { auth } from "../utils/firebase";
@@ -17,9 +17,10 @@ import {
 } from "../utils/helperFunctions";
 
 const Register = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const handleChange = (key: "name" | "email" | "password", value: string) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
   const setUser = useUserStore((state) => state.setUser);
 
   useEffect(() => {
@@ -32,6 +33,7 @@ const Register = () => {
   }
 
   async function handleRegister() {
+    const { name, email, password } = form;
     if (!email.trim() || !password.trim()) {
       Alert.alert("Error", "Please enter both email and password.");
       return;
@@ -82,30 +84,24 @@ const Register = () => {
           <FontAwesome5 name="user-plus" size={100} color="#6c47ff" />
         </View>
         <Text className="font-bold text-3xl mt-5">Register</Text>
-        <TextInput
-          className="border-2 border-primary rounded-md p-3 text-black"
+        <FormInput
           autoCapitalize="none"
           placeholder="Enter Your Name"
-          placeholderTextColor="#000"
-          value={name}
-          onChangeText={setName}
+          value={form.name}
+          onChangeText={(val) => handleChange("name", val)}
         />
-        <TextInput
-          className="border-2 border-primary rounded-md p-3 text-black"
+        <FormInput
           autoCapitalize="none"
           placeholder="Enter Your Email"
-          placeholderTextColor="#000"
-          value={email}
-          onChangeText={setEmail}
+          value={form.email}
+          onChangeText={(val) => handleChange("email", val)}
           keyboardType="email-address"
         />
-        <TextInput
-          className="border-2 border-primary rounded-md p-3 text-black"
+        <FormInput
           autoCapitalize="none"
           placeholder="Enter Your Password"
-          placeholderTextColor="#000"
-          value={password}
-          onChangeText={setPassword}
+          value={form.password}
+          onChangeText={(val) => handleChange("password", val)}
           secureTextEntry
         />
         <Button text="Register" onPress={handleRegister} />
