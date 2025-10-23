@@ -1,15 +1,14 @@
-// ...existing code...
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { signInWithEmailAndPassword } from "@react-native-firebase/auth";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import FormInput from "../components/FormInput";
 import GoogleSignInButton from "../components/GoogleSignInButton";
+import { useUserStore } from "../store/userStore";
 import { auth } from "../utils/firebase";
 import { configureGoogleSignin } from "../utils/googleSigninConfig";
-
-import { useUserStore } from "../store/userStore";
 import {
   errorHandler,
   formatUserFromCredential,
@@ -36,7 +35,7 @@ const Login = () => {
         password.trim()
       );
       setUser(formatUserFromCredential(userCredential, "email"));
-    } catch (e: any) {
+    } catch (e) {
       errorHandler(e);
     }
   }
@@ -53,20 +52,16 @@ const Login = () => {
           <FontAwesome name="user-circle" size={100} color="#6c47ff" />
         </View>
         <Text className="font-bold text-3xl mt-5">Login</Text>
-        <TextInput
-          className="border-2 border-primary rounded-md p-3 text-black"
+        <FormInput
           autoCapitalize="none"
           placeholder="Enter Your Email"
-          placeholderTextColor="#000"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
         />
-        <TextInput
-          className="border-2 border-primary rounded-md p-3 text-black"
+        <FormInput
           autoCapitalize="none"
           placeholder="Enter Your Password"
-          placeholderTextColor="#000"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
