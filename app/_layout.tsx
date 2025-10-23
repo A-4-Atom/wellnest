@@ -10,6 +10,7 @@ import "react-native-gesture-handler";
 import "react-native-reanimated";
 import "../global.css";
 import { useUserStore } from "../store/userStore";
+import { formatUserFromCredential } from "../utils/helperFunctions";
 
 export default function RootLayout() {
   const [initializing, setInitializing] = useState(true);
@@ -21,13 +22,7 @@ export default function RootLayout() {
   useEffect(() => {
     function handleAuthStateChanged(user: FirebaseAuthTypes.User | null) {
       if (user) {
-        setUser({
-          uid: user.uid,
-          email: user.email ?? "",
-          firstName: user.displayName ?? "",
-          provider: user.providerData?.[0]?.providerId ?? "",
-          registeredOn: new Date().toISOString(),
-        });
+        setUser(formatUserFromCredential(user));
       }
       setInitializing(false);
     }

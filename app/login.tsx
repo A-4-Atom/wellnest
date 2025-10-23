@@ -38,7 +38,7 @@ const Login = () => {
         email.trim(),
         password.trim()
       );
-      setUser(formatUserFromCredential(userCredential, "email"));
+      setUser(formatUserFromCredential(userCredential));
     } catch (e) {
       errorHandler(e);
     }

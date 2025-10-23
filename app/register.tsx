@@ -34,7 +34,7 @@ const Register = () => {
 
   async function handleRegister() {
     const { name, email, password } = form;
-    if (!email.trim() || !password.trim()) {
+    if (!email.trim() || !password.trim() || !name.trim()) {
       Alert.alert("Error", "Please enter both email and password.");
       return;
     }
@@ -43,31 +43,23 @@ const Register = () => {
       return;
     }
     try {
-      // Split name into first and last name
-      const nameParts = name.trim().split(" ");
-      const firstName = nameParts[0] || "";
-      const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
-
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email.trim(),
         password.trim()
       );
 
-      const formattedUser = {
-        ...formatUserFromCredential(userCredential, "email", firstName),
-        lastName,
-      };
+      const formattedUser = formatUserFromCredential(userCredential);
       setUser(formattedUser);
       await addUserToFirestore({
         uid: formattedUser.uid,
-        email: formattedUser.email,
+        email: formattedUser.email || "",
         firstName: formattedUser.firstName,
         lastName: formattedUser.lastName,
         provider: formattedUser.provider,
-        registeredOn: formattedUser.registeredOn,
+        registeredOn: new Date().toISOString(),
       });
-    } catch (e: any) {
+    } catch (e) {
       errorHandler(e);
     }
   }

@@ -12,7 +12,6 @@ export type UserStoreType = {
   setUser: (user: Partial<UserStoreType>) => void;
   clearUser: () => void;
   setOnboarded: (status: boolean) => void;
-  registeredOn: string;
 };
 
 export const useUserStore = create(
@@ -24,7 +23,6 @@ export const useUserStore = create(
       email: "",
       provider: "",
       hasOnboarded: false,
-      registeredOn: "",
       setUser: (user: any) => set(() => ({ ...user })),
       clearUser: () =>
         set((state) => ({
@@ -34,7 +32,6 @@ export const useUserStore = create(
           email: "",
           provider: "",
           hasOnboarded: state.hasOnboarded,
-          registeredOn: "",
         })),
       setOnboarded: (status: boolean) => set(() => ({ hasOnboarded: status })),
     }),

@@ -1,4 +1,5 @@
 import {
+  FirebaseAuthTypes,
   GoogleAuthProvider,
   signInWithCredential,
 } from "@react-native-firebase/auth";
@@ -14,20 +15,23 @@ import { useUserStore } from "../store/userStore";
 import { auth, db } from "./firebase";
 
 export function formatUserFromCredential(
-  userCredential: any,
-  provider: string,
-  firstName?: string,
-  lastName?: string
+  userCredential: FirebaseAuthTypes.UserCredential | FirebaseAuthTypes.User
 ) {
   const hasOnboarded = useUserStore.getState().hasOnboarded;
+  // If userCredential has a 'user' property, it's a UserCredential, otherwise it's a User
+  const user = "user" in userCredential ? userCredential.user : userCredential;
+  const provider = user.providerData?.[0]?.providerId || "";
+  const displayName = user.displayName || "";
+  const nameParts = displayName.trim().split(" ");
+  const firstName = nameParts[0] || "";
+  const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
   return {
-    uid: userCredential.user.uid,
-    email: userCredential.user.email ?? undefined,
-    firstName: firstName ?? userCredential.user.displayName ?? "",
-    lastName: lastName ?? "",
+    uid: user.uid,
+    email: user.email ?? undefined,
+    firstName,
+    lastName,
     provider,
     hasOnboarded,
-    registeredOn: new Date().toISOString(),
   };
 }
 
@@ -97,6 +101,15 @@ export async function handleGoogleSignIn() {
   }
 }
 
+type firestoreUserParams = {
+  uid: string;
+  firstName: string;
+  lastName?: string;
+  provider: string;
+  registeredOn: string;
+  email: string;
+};
+
 export async function addUserToFirestore({
   uid,
   firstName,
@@ -104,14 +117,7 @@ export async function addUserToFirestore({
   provider,
   registeredOn,
   email,
-}: {
-  uid: string;
-  firstName: string;
-  lastName?: string;
-  provider: string;
-  registeredOn: string;
-  email: string;
-}) {
+}: firestoreUserParams)  {
   try {
     if (!uid) {
       return;
