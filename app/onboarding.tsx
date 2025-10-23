@@ -1,17 +1,14 @@
-import { db } from "@/utils/firebase";
-import type { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
-import { collection, getDocs } from "@react-native-firebase/firestore";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Image,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useUserStore } from "../store/userStore";
+import { useFirestoreCollection } from "../hooks/useFirestoreCollection";
 
 interface Slide {
   id: string;
@@ -21,8 +18,11 @@ interface Slide {
 }
 
 const Onboarding = () => {
-  const [slides, setSlides] = useState<Slide[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    data: slides,
+    loading,
+    error,
+  } = useFirestoreCollection<Slide>("onboardingSlides");
   const [currentIndex, setCurrentIndex] = useState(0);
   const setOnboarded = useUserStore((state) => state.setOnboarded);
   const hasOnboarded = useUserStore((state) => state.hasOnboarded);
@@ -31,28 +31,7 @@ const Onboarding = () => {
   useEffect(() => {
     if (hasOnboarded) {
       router.replace("/login");
-      return;
     }
-    const fetchSlides = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "onboardingSlides"));
-        const data = querySnapshot.docs.map(
-          (doc: FirebaseFirestoreTypes.DocumentSnapshot) => {
-            const docData = doc.data();
-            return {
-              id: doc.id,
-              ...docData,
-            };
-          }
-        );
-        setSlides(data);
-      } catch (e: any) {
-        Alert.alert("Error", e.message || "Failed to load onboarding slides.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSlides();
   }, [hasOnboarded, router]);
 
   const handleNext = () => {
@@ -68,6 +47,14 @@ const Onboarding = () => {
     return (
       <View className="flex-1 justify-center items-center">
         <ActivityIndicator size="large" color="#6c47ff" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text>{error}</Text>
       </View>
     );
   }
