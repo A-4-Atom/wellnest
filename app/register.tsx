@@ -1,5 +1,9 @@
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import { createUserWithEmailAndPassword } from "@react-native-firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  reload,
+  updateProfile,
+} from "@react-native-firebase/auth";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Text, View } from "react-native";
@@ -49,7 +53,15 @@ const Register = () => {
         password.trim()
       );
 
-      const formattedUser = formatUserFromCredential(userCredential);
+      await updateProfile(userCredential.user, { displayName: name.trim() });
+      await reload(userCredential.user);
+
+      if (!auth.currentUser) {
+        Alert.alert("Error", "User not found after registration.");
+        return;
+      }
+      const formattedUser = formatUserFromCredential(auth.currentUser);
+
       setUser(formattedUser);
       await addUserToFirestore({
         uid: formattedUser.uid,
