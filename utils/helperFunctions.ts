@@ -3,12 +3,7 @@ import {
   GoogleAuthProvider,
   signInWithCredential,
 } from "@react-native-firebase/auth";
-import {
-  collection,
-  doc,
-  getDoc,
-  setDoc,
-} from "@react-native-firebase/firestore";
+import { collection, doc, setDoc } from "@react-native-firebase/firestore";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { Alert } from "react-native";
 import { useUserStore } from "../store/userStore";
@@ -49,7 +44,7 @@ export function errorHandler(e: any) {
   Alert.alert("Error", errorMessage);
 }
 
-export async function handleGoogleSignIn() {
+export async function handleGoogleSignIn(mode: "login" | "register") {
   const setUser = useUserStore.getState().setUser;
   try {
     await GoogleSignin.hasPlayServices();
@@ -67,15 +62,7 @@ export async function handleGoogleSignIn() {
     const nameParts = displayName.trim().split(" ");
     const firstName = nameParts[0] || "";
     const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
-
-    // Check if user already exists in Firestore
-    const userDocRef = doc(collection(db, "users"), userCredential.user.uid);
-    const userDoc = await getDoc(userDocRef);
-    let registeredOn = new Date().toISOString();
-    const userData = userDoc.data() as { registered?: string } | undefined;
-    if (userData?.registered) {
-      registeredOn = userData.registered;
-    }
+    const registeredOn = new Date().toISOString();
 
     const formattedUser = {
       uid: userCredential.user.uid,
@@ -87,14 +74,18 @@ export async function handleGoogleSignIn() {
       registeredOn,
     };
     setUser(formattedUser);
-    await addUserToFirestore({
-      uid: formattedUser.uid,
-      email: formattedUser.email || "",
-      firstName: formattedUser.firstName,
-      lastName: formattedUser.lastName,
-      provider: formattedUser.provider,
-      registeredOn: formattedUser.registeredOn,
-    });
+
+    // Only add user to Firestore if registering
+    if (mode === "register") {
+      await addUserToFirestore({
+        uid: formattedUser.uid,
+        email: formattedUser.email || "",
+        firstName: formattedUser.firstName,
+        lastName: formattedUser.lastName,
+        provider: formattedUser.provider,
+        registeredOn: formattedUser.registeredOn,
+      });
+    }
   } catch (error: any) {
     console.log(error.message);
     Alert.alert("Error", error.message);
@@ -117,7 +108,7 @@ export async function addUserToFirestore({
   provider,
   registeredOn,
   email,
-}: firestoreUserParams)  {
+}: firestoreUserParams) {
   try {
     if (!uid) {
       return;

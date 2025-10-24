@@ -79,7 +79,7 @@ const Login = () => {
           </Text>
         </TouchableOpacity>
         <Text className="text-center font-semibold">OR</Text>
-        <GoogleSignInButton />
+        <GoogleSignInButton mode="login"/>
         <Text className="text-center text-md mt-2">
           Don&apos;t have an account?{" "}
           <Link href="/register">

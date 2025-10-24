@@ -110,7 +110,7 @@ const Register = () => {
         />
         <Button text="Register" onPress={handleRegister} />
         <Text className="text-center font-semibold">OR</Text>
-        <GoogleSignInButton />
+        <GoogleSignInButton mode="register" />
         <Text className="text-center text-md mt-2">
           Already Have An Account?{" "}
           <Link href="/login">
