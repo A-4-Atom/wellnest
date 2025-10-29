@@ -1,10 +1,16 @@
 import { sendEmailVerification } from "@react-native-firebase/auth";
+import { crash, getCrashlytics, log } from "@react-native-firebase/crashlytics";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { auth } from "../../utils/firebase";
 import { errorHandler } from "../../utils/helperFunctions";
 
 const Home = () => {
+  function testCrashlytics() {
+    const crashlytics = getCrashlytics();
+    log(crashlytics, "Testing a crash");
+    crash(crashlytics);
+  }
   async function verifyEmail() {
     try {
       if (auth.currentUser) {
@@ -24,6 +30,12 @@ const Home = () => {
         onPress={verifyEmail}
       >
         <Text className="text-white">Verify Email</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        className="mt-4 p-3 bg-primary rounded-md"
+        onPress={testCrashlytics}
+      >
+        <Text className="text-white">Test Crashlytics</Text>
       </TouchableOpacity>
     </View>
   );

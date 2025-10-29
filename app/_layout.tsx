@@ -3,6 +3,7 @@ import {
   getAuth,
   onAuthStateChanged,
 } from "@react-native-firebase/auth";
+import { getCrashlytics, setCrashlyticsCollectionEnabled, log } from "@react-native-firebase/crashlytics";
 import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
@@ -41,6 +42,13 @@ export default function RootLayout() {
       }
     }
   }, [initializing, uid, router, hasOnboarded]);
+
+  useEffect(() => {
+    const crashlytics = getCrashlytics();
+    setCrashlyticsCollectionEnabled(crashlytics, true);
+    log(crashlytics, "Crashlytics enabled and app started");
+  }, []);
+
 
   return (
     <>
