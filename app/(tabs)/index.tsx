@@ -4,6 +4,7 @@ import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { auth } from "../../utils/firebase";
 import { errorHandler } from "../../utils/helperFunctions";
+import mixpanel from "@/utils/mixpanel";
 
 const Home = () => {
   function testCrashlytics() {
@@ -18,6 +19,9 @@ const Home = () => {
       } else {
         throw new Error("No user is currently signed in.");
       }
+      mixpanel.track('Email Verification Sent', {
+        "User ID": auth.currentUser?.uid
+      })
     } catch (e) {
       errorHandler(e);
     }

@@ -3,7 +3,11 @@ import {
   getAuth,
   onAuthStateChanged,
 } from "@react-native-firebase/auth";
-import { getCrashlytics, setCrashlyticsCollectionEnabled, log } from "@react-native-firebase/crashlytics";
+import {
+  getCrashlytics,
+  log,
+  setCrashlyticsCollectionEnabled,
+} from "@react-native-firebase/crashlytics";
 import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
@@ -12,6 +16,7 @@ import "react-native-reanimated";
 import "../global.css";
 import { useUserStore } from "../store/userStore";
 import { formatUserFromCredential } from "../utils/helperFunctions";
+import mixpanel from "@/utils/mixpanel";
 
 export default function RootLayout() {
   const [initializing, setInitializing] = useState(true);
@@ -19,6 +24,7 @@ export default function RootLayout() {
   const uid = useUserStore((state) => state.uid);
   const hasOnboarded = useUserStore((state) => state.hasOnboarded);
   const router = useRouter();
+
 
   useEffect(() => {
     function handleAuthStateChanged(user: FirebaseAuthTypes.User | null) {
@@ -44,6 +50,8 @@ export default function RootLayout() {
   }, [initializing, uid, router, hasOnboarded]);
 
   useEffect(() => {
+    mixpanel.init();
+    mixpanel.track("App Launched");
     const crashlytics = getCrashlytics();
     setCrashlyticsCollectionEnabled(crashlytics, true);
     log(crashlytics, "Crashlytics enabled and app started");
