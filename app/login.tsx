@@ -13,7 +13,6 @@ import {
   errorHandler,
   formatUserFromCredential,
 } from "../utils/helperFunctions";
-import mixpanel from "@/utils/mixpanel";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -40,12 +39,6 @@ const Login = () => {
         password.trim()
       );
       setUser(formatUserFromCredential(userCredential));
-      mixpanel.identify(userCredential.user.uid);
-      mixpanel.getPeople().set("$name", userCredential.user.displayName);
-      mixpanel.getPeople().set("$email", userCredential.user.email);
-      mixpanel.track('User Logged In', {
-        "Login Type": 'Email/Password'
-      });
     } catch (e) {
       errorHandler(e);
     }

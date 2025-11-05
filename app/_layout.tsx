@@ -16,7 +16,6 @@ import "react-native-reanimated";
 import "../global.css";
 import { useUserStore } from "../store/userStore";
 import { formatUserFromCredential } from "../utils/helperFunctions";
-import mixpanel from "@/utils/mixpanel";
 
 export default function RootLayout() {
   const [initializing, setInitializing] = useState(true);
@@ -50,8 +49,6 @@ export default function RootLayout() {
   }, [initializing, uid, router, hasOnboarded]);
 
   useEffect(() => {
-    mixpanel.init();
-    mixpanel.track("App Launched");
     const crashlytics = getCrashlytics();
     setCrashlyticsCollectionEnabled(crashlytics, true);
     log(crashlytics, "Crashlytics enabled and app started");

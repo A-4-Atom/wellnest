@@ -20,7 +20,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "googleServicesFile": "./assets/google-services.json",
+      "googleServicesFile": "./assets/google-services-dev.json",
       "package": "com.vikascsgo.wellnest"
     },
     "web": {

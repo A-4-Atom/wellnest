@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "253923224813",
+    "firebase_url": "https://wellnest-77cd3-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "wellnest-77cd3",
     "storage_bucket": "wellnest-77cd3.firebasestorage.app"
   },
@@ -19,6 +20,14 @@
           "android_info": {
             "package_name": "com.vikascsgo.wellnest",
             "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "253923224813-v7ch39aov98and6bnv4pg4pf34d0eefb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vikascsgo.wellnest",
+            "certificate_hash": "3fe1e1c525e6729c1207889df17d030de318ebb2"
           }
         },
         {
