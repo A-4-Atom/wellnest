@@ -10,7 +10,9 @@ web-build/
 expo-env.d.ts
 .env
 .env.dev
-.env.qa
+.env.prod
+assets/google-services-dev.json
+assets/google-services-prod.json
 
 # Native
 .kotlin/
